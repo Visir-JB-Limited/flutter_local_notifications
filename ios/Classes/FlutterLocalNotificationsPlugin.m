@@ -1,5 +1,4 @@
 #import "FlutterLocalNotificationsPlugin.h"
-#import <MediaPlayer/MediaPlayer.h>
 
 @implementation FlutterLocalNotificationsPlugin{
     FlutterMethodChannel* _channel;
@@ -697,35 +696,8 @@ static FlutterError *getFlutterError(NSError *error) {
 }
 
 #pragma mark - UNUserNotificationCenterDelegate
-- (void) increaseVolume {
-    MPVolumeView *volumeView = [[MPVolumeView alloc] init];
-      UISlider *volumeViewSlider = nil;
-
-      for (UIView *view in volumeView.subviews) {
-        if ([view isKindOfClass:[UISlider class]]) {
-          volumeViewSlider = (UISlider *)view;
-          break;
-        }
-      }
-
-      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        volumeViewSlider.value = 1.0f;
-      });
-}
-
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification :(UNNotification *)notification withCompletionHandler :(void (^)(UNNotificationPresentationOptions))completionHandler NS_AVAILABLE_IOS(10.0) {
-    // Setting sound
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        // NSLog(@"userNotificationCenter willPresentNotification");
-        NSError *error = nil;
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker|AVAudioSessionCategoryOptionDuckOthers error:&error];
-        [[AVAudioSession sharedInstance] setActive:TRUE error:&error];
-        if (nil != error) {
-            NSLog(@"%@", [error localizedDescription]);
-        }
-    });
     if(![self isAFlutterLocalNotification:notification.request.content.userInfo]) {
-        [self increaseVolume];
         return;
     }
     
